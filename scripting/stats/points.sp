@@ -30,12 +30,12 @@ int PointValueDefaults[PType_Count] = {
 	100, // Tank Kill (Solo)  [bonus to tank kill]
 	50, // Tank Kill (Melee) [bonus to tank kill]
 	4, // Headshot kill (commons only) [bonus to common kill]
-	-5, // Friendly Fire
+	-1, // Friendly Fire // was -5
 	50, // Heal Other
 	25, // Revive Other
 	50, // Defib Other
 	5, // Deploy Special Ammo
-	-500, // Friendly killed
+	0, // Friendly killed // was -500
 	100, // Witch crowned
 	10, // Self cleared smoker
 	10, // Hunter dead stopped
