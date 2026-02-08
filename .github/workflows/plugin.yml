@@ -2,7 +2,7 @@ on:
   push:
     paths:
       - 'scripting/**'
-      - '.forgejo/workflows/plugin.yml'
+      - '.github/workflows/plugin.yml'
   workflow_dispatch:
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Setup sourcepawn
-        uses: https://github.com/rumblefrog/setup-sp@bb7306e551914d48b2d8405dba17ddc46a4a12a2
+        uses: rumblefrog/setup-sp@bb7306e551914d48b2d8405dba17ddc46a4a12a2
         with:
           version: ${{ matrix.sm-version }}
       - name: Build Plugins
@@ -23,7 +23,7 @@ jobs:
           SPCOMP_PATH: spcomp
         run: chmod +x compile_all.sh && ./compile_all.sh
       - name: Upload artifacts 
-        uses: https://data.forgejo.org/forgejo/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with: 
           name: ${{ matrix.sm-version }}.zip
           path: plugins/*.smx  
@@ -31,12 +31,12 @@ jobs:
   release:
     name: Create release for tags
     # Only release on tags
-    if: startsWith(forgejo.ref, 'refs/tags')
+    if: startsWith(github.ref, 'refs/tags')
     runs-on: docker
     needs: build
     steps:
       - name: Pull Artifact
-        uses: https://data.forgejo.org/forgejo/download-artifact@v4
+        uses: actions/download-artifact@v4
         with: 
           merge-multiple: true
       - uses: actions/forgejo-release@v2.7.3
@@ -49,16 +49,16 @@ jobs:
   deploy:
     name: Deploy release
     # Only deploy on tags
-    if: startsWith(forgejo.ref, 'refs/tags')
+    if: startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-full
     needs: build
     steps:
       - name: Pull Artifact
-        uses: https://data.forgejo.org/forgejo/download-artifact@v4
+        uses: actions/download-artifact@v4
         with: 
           name: 1.12.x.zip
       - name: Install SSH Key
-        uses: https://github.com/shimataro/ssh-key-action@v2.7.0
+        uses: shimataro/ssh-key-action@v2.7.0
         with:
           key: ${{ secrets.REMOTE_PRIVATE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
